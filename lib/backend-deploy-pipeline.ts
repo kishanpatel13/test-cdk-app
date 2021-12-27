@@ -51,8 +51,8 @@ export class MyPipelineStack extends cdk.Stack {
           privileged: true,
         },
         buildSpec: codebuild.BuildSpec.fromObject({
+          version: "0.2",
           phases: {
-            version: "0.2",
             build: {
               commands: [
                 // login to ECR first
