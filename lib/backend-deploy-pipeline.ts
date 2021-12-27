@@ -22,7 +22,7 @@ export class MyPipelineStack extends cdk.Stack {
     // Source Actions
     // Get backend source
     const backendSourceAction = new codepipeline_actions.GitHubSourceAction({
-      actionName: "GitHub_Source",
+      actionName: "Backend_Source",
       owner: "kishanpatel13",
       repo: "test-be-app",
       oauthToken: new SecretValue("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"),
@@ -31,7 +31,7 @@ export class MyPipelineStack extends cdk.Stack {
     });
     // Get CDK source
     const cdkSourceAction = new codepipeline_actions.GitHubSourceAction({
-      actionName: "GitHub_Source",
+      actionName: "CDK_Source",
       owner: "kishanpatel13",
       repo: "test-cdk-app",
       oauthToken: new SecretValue("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"),
