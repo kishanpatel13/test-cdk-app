@@ -3,6 +3,7 @@ import {
   aws_ecs as ecs,
   aws_ec2 as ec2,
   aws_ecs_patterns as ecs_patterns,
+  aws_ssm as ssm,
 } from "aws-cdk-lib";
 
 export interface FargateDeploymentStackProps extends cdk.StackProps {
@@ -26,6 +27,10 @@ export class FargateDeploymentStack extends cdk.Stack {
       vpc: vpc,
     });
 
+    const ssmParameter = new ssm.StringParameter(this, "testParameter", {
+      stringValue: "Hello World",
+    });
+
     // Fargate service
     const backendService =
       new ecs_patterns.ApplicationLoadBalancedFargateService(
@@ -38,6 +43,9 @@ export class FargateDeploymentStack extends cdk.Stack {
           desiredCount: 1,
           taskImageOptions: {
             image: props.image,
+            secrets: {
+              testSecret: ecs.Secret.fromSsmParameter(ssmParameter),
+            },
           },
         }
       );
