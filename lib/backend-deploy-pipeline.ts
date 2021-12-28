@@ -48,9 +48,7 @@ export class MyPipelineStack extends Stack {
     );
 
     // this is the ECR repository where the built Docker image will be pushed
-    const appEcrRepo = new ecr.Repository(this, "TestBackendAppRepository", {
-      removalPolicy: RemovalPolicy.DESTROY,
-    });
+    const appEcrRepo = new ecr.Repository(this, "TestBackendAppRepository");
 
     // Create codebuild project
     const backendProject = new codebuild.PipelineProject(
