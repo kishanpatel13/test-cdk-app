@@ -1,4 +1,3 @@
-import * as cdk from "aws-cdk-lib";
 import {
   aws_codepipeline_actions as codepipeline_actions,
   aws_codepipeline as codepipeline,
@@ -6,13 +5,16 @@ import {
   aws_ecs as ecs,
   aws_ecr as ecr,
   SecretValue,
+  Stack,
+  StackProps,
+  RemovalPolicy,
 } from "aws-cdk-lib";
 import { Construct } from "constructs";
 
-export class MyPipelineStack extends cdk.Stack {
+export class MyPipelineStack extends Stack {
   public readonly tagParameterContainerImage: ecs.TagParameterContainerImage;
 
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
     const backendSourceOutput = new codepipeline.Artifact();
@@ -27,8 +29,11 @@ export class MyPipelineStack extends cdk.Stack {
       repo: "test-be-app",
       oauthToken: new SecretValue("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"),
       output: backendSourceOutput,
-      branch: "main", // default: 'master'
+      branch: "main", // default: 'master',
     });
+    backendSourceAction.actionProperties.resource?.applyRemovalPolicy(
+      RemovalPolicy.DESTROY
+    );
     // Get CDK source
     const cdkSourceAction = new codepipeline_actions.GitHubSourceAction({
       actionName: "CDK_Source",
@@ -38,9 +43,14 @@ export class MyPipelineStack extends cdk.Stack {
       output: cdkSourceOutput,
       branch: "main", // default: 'master'
     });
+    cdkSourceAction.actionProperties.resource?.applyRemovalPolicy(
+      RemovalPolicy.DESTROY
+    );
 
     // this is the ECR repository where the built Docker image will be pushed
-    const appEcrRepo = new ecr.Repository(this, "TestBackendAppRepository");
+    const appEcrRepo = new ecr.Repository(this, "TestBackendAppRepository", {
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
 
     // Create codebuild project
     const backendProject = new codebuild.PipelineProject(
@@ -123,6 +133,9 @@ export class MyPipelineStack extends cdk.Stack {
       project: backendProject,
       input: backendSourceOutput,
     });
+    backendBuildAction.actionProperties.resource?.applyRemovalPolicy(
+      RemovalPolicy.DESTROY
+    );
 
     const cdkBuildAction = new codepipeline_actions.CodeBuildAction({
       actionName: "CdkBuild",
@@ -130,12 +143,15 @@ export class MyPipelineStack extends cdk.Stack {
       input: cdkSourceOutput,
       outputs: [cdkCodeBuildOutput],
     });
+    cdkBuildAction.actionProperties.resource?.applyRemovalPolicy(
+      RemovalPolicy.DESTROY
+    );
 
     // Deploy Action
     const deployAction =
       new codepipeline_actions.CloudFormationCreateUpdateStackAction({
         actionName: "Deploy",
-        stackName: "BackendDeploymentFromCodePipeline",
+        stackName: "FargateDeploymentStack",
         // this name has to be the same name as used below in the CDK code for the application Stack
         templatePath: cdkCodeBuildOutput.atPath(
           "FargateDeploymentStack.template.json"

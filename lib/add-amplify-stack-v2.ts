@@ -1,12 +1,18 @@
-import * as cdk from 'aws-cdk-lib';
-import { aws_amplify as amplify, aws_codebuild } from "aws-cdk-lib";
-import * as amplify_build_spec from './amplify_build_spec.json';
+import {
+  aws_amplify as amplify,
+  aws_codebuild,
+  App,
+  Stack,
+  StackProps,
+} from "aws-cdk-lib";
+import * as amplify_build_spec from "./amplify_build_spec.json";
 
-export class AddAmplifyStack2 extends cdk.Stack {
-  constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
+export class AddAmplifyStack2 extends Stack {
+  constructor(scope: App, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const amplifyBuildSpec = aws_codebuild.BuildSpec.fromObject(amplify_build_spec);
+    const amplifyBuildSpec =
+      aws_codebuild.BuildSpec.fromObject(amplify_build_spec);
 
     const amplifyApp = new amplify.CfnApp(this, "AmplifyApp2", {
       name: "AmplifyApp2",

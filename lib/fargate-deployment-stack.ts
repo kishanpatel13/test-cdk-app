@@ -1,17 +1,20 @@
-import * as cdk from "aws-cdk-lib";
 import {
   aws_ecs as ecs,
   aws_ec2 as ec2,
   aws_ecs_patterns as ecs_patterns,
   aws_ssm as ssm,
+  App,
+  StackProps,
+  Stack,
+  CfnOutput,
 } from "aws-cdk-lib";
 
-export interface FargateDeploymentStackProps extends cdk.StackProps {
+export interface FargateDeploymentStackProps extends StackProps {
   readonly image: ecs.ContainerImage;
 }
 
-export class FargateDeploymentStack extends cdk.Stack {
-  constructor(scope: cdk.App, id: string, props: FargateDeploymentStackProps) {
+export class FargateDeploymentStack extends Stack {
+  constructor(scope: App, id: string, props: FargateDeploymentStackProps) {
     super(scope, id, props);
 
     // Create new VPC
@@ -54,7 +57,7 @@ export class FargateDeploymentStack extends cdk.Stack {
     backendService.targetGroup.configureHealthCheck({ path: "/health" });
 
     // Load balancer url
-    new cdk.CfnOutput(this, "loadBalancerUrl", {
+    new CfnOutput(this, "loadBalancerUrl", {
       value: backendService.loadBalancer.loadBalancerDnsName,
       exportName: "loadBalancerUrl",
     });
