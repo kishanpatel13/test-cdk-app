@@ -11,11 +11,24 @@ import {
 } from "aws-cdk-lib";
 import { Construct } from "constructs";
 
+interface GitHubRepository {
+  owner: string;
+  repo: string;
+  branch: string;
+  token: string;
+}
+
+interface MyPipelineStackProps extends StackProps {
+  backendRepository: GitHubRepository;
+  cdkRepository: GitHubRepository;
+}
+
 export class MyPipelineStack extends Stack {
   public readonly tagParameterContainerImage: ecs.TagParameterContainerImage;
 
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  constructor(scope: Construct, id: string, props: MyPipelineStackProps) {
     super(scope, id, props);
+    const { backendRepository, cdkRepository } = props;
 
     const backendSourceOutput = new codepipeline.Artifact();
     const cdkSourceOutput = new codepipeline.Artifact();
@@ -25,11 +38,11 @@ export class MyPipelineStack extends Stack {
     // Get backend source
     const backendSourceAction = new codepipeline_actions.GitHubSourceAction({
       actionName: "Backend_Source",
-      owner: "kishanpatel13",
-      repo: "test-be-app",
-      oauthToken: new SecretValue("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"),
+      owner: backendRepository.owner,
+      repo: backendRepository.repo,
+      oauthToken: SecretValue.secretsManager(backendRepository.token),
       output: backendSourceOutput,
-      branch: "main", // default: 'master',
+      branch: backendRepository.branch, // default: 'master',
     });
     backendSourceAction.actionProperties.resource?.applyRemovalPolicy(
       RemovalPolicy.DESTROY
@@ -37,11 +50,11 @@ export class MyPipelineStack extends Stack {
     // Get CDK source
     const cdkSourceAction = new codepipeline_actions.GitHubSourceAction({
       actionName: "CDK_Source",
-      owner: "kishanpatel13",
-      repo: "test-cdk-app",
-      oauthToken: new SecretValue("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"),
+      owner: cdkRepository.owner,
+      repo: cdkRepository.repo,
+      oauthToken: SecretValue.secretsManager(cdkRepository.token),
       output: cdkSourceOutput,
-      branch: "main", // default: 'master'
+      branch: cdkRepository.branch, // default: 'master'
     });
     cdkSourceAction.actionProperties.resource?.applyRemovalPolicy(
       RemovalPolicy.DESTROY
