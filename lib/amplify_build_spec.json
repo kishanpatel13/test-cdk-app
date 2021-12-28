@@ -10,7 +10,7 @@
       }
     },
     "artifacts": {
-      "baseDirectory": "out",
+      "baseDirectory": "build",
       "files": ["**/*"]
     },
     "cache": {
