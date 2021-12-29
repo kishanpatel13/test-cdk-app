@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 import "source-map-support/register";
-import * as cdk from "aws-cdk-lib";
+import { App, Tags } from "aws-cdk-lib";
 import { MyPipelineStack } from "../lib/backend-deploy-pipeline";
 import { FargateDeploymentStack } from "../lib/fargate-deployment-stack";
 import { AddAmplifyStack } from "../lib/add-amplify-stack";
 
-const app = new cdk.App();
+const app = new App();
 
 const pipelineStack = new MyPipelineStack(app, "MyPipelineStack", {
   backendRepository: {
@@ -22,12 +22,20 @@ const pipelineStack = new MyPipelineStack(app, "MyPipelineStack", {
   },
 });
 
-new FargateDeploymentStack(app, "FargateDeploymentStack", {
-  image: pipelineStack.tagParameterContainerImage,
-});
+Tags.of(pipelineStack).add("nameTag", "MyPipelineStack");
 
-new AddAmplifyStack(app, "AddAmplifyStack", {
+const fargateDeploymentStack = new FargateDeploymentStack(
+  app,
+  "FargateDeploymentStack",
+  {
+    image: pipelineStack.tagParameterContainerImage,
+  }
+);
+Tags.of(fargateDeploymentStack).add("nameTag", "FargateDeploymentStack");
+
+const amplifyStack = new AddAmplifyStack(app, "AddAmplifyStack", {
   repositoryUrl: "https://github.com/kishanpatel13/react-test-app.git",
   branch: "main",
   token: "github-token",
 });
+Tags.of(amplifyStack).add("nameTag", "AddAmplifyStack");

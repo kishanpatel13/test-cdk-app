@@ -31,6 +31,7 @@ export class AddAmplifyStack extends Stack {
     new amplify.CfnBranch(this, "mainBranch", {
       branchName: props.branch,
       appId: amplifyApp.attrAppId,
+      enableAutoBuild: true,
     });
   }
 }
