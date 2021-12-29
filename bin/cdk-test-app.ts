@@ -34,7 +34,7 @@ const fargateDeploymentStack = new FargateDeploymentStack(
 Tags.of(fargateDeploymentStack).add("nameTag", "FargateDeploymentStack");
 
 const amplifyStack = new AddAmplifyStack(app, "AddAmplifyStack", {
-  repositoryUrl: "https://github.com/kishanpatel13/react-test-app.git",
+  repositoryUrl: "https://github.com/kishanpatel13/react-test-app",
   branch: "main",
   token: "github-token",
 });
