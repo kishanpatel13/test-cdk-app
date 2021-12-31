@@ -4,6 +4,8 @@ import { App, Tags } from "aws-cdk-lib";
 import { MyPipelineStack } from "../lib/backend-deploy-pipeline";
 import { FargateDeploymentStack } from "../lib/fargate-deployment-stack";
 import { AddAmplifyStack } from "../lib/add-amplify-stack";
+import { FeDeploymentPipelineStack } from "../lib/fe-deploy-pipeline";
+import { NewPipelineStack } from "../lib/new-pipeline";
 
 const app = new App();
 
@@ -39,3 +41,14 @@ const amplifyStack = new AddAmplifyStack(app, "AddAmplifyStack", {
   token: "github-token",
 });
 Tags.of(amplifyStack).add("nameTag", "AddAmplifyStack");
+
+new FeDeploymentPipelineStack(app, "FeDeploymentPipelineStack", {
+  feRepository: {
+    owner: "kishanpatel13",
+    repo: "react-test-app",
+    branch: "main",
+    token: "github-token",
+  },
+});
+
+new NewPipelineStack(app, 'NewPipelineStack');
