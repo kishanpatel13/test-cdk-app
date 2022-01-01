@@ -57,5 +57,3 @@ new NewPipelineStack(app, 'NewPipelineStack', {
     region: 'us-west-1',
   }
 });
-
-app.synth();
