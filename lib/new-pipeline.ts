@@ -9,6 +9,7 @@ export class NewPipelineStack extends Stack {
 
         const pipeline = new CodePipeline(this, 'Pipeline', {
             pipelineName: 'MyPipeline',
+            selfMutation: false,
             synth: new ShellStep('Synth', {
                 input: CodePipelineSource.gitHub('kishanpatel13/test-cdk-app', 'main', {
                     authentication: new SecretValue("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"),
