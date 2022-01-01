@@ -17,6 +17,6 @@ export class NewPipelineStack extends Stack {
             })
         });
 
-        pipeline.addStage(new MyPipelineAppStage(this, "test"));
+        // pipeline.addStage(new MyPipelineAppStage(this, "test"));
     }
 }
