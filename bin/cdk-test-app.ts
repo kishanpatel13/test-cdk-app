@@ -51,4 +51,9 @@ new FeDeploymentPipelineStack(app, "FeDeploymentPipelineStack", {
   },
 });
 
-new NewPipelineStack(app, 'NewPipelineStack');
+new NewPipelineStack(app, 'NewPipelineStack', {
+  env: {
+    account: '654547709207',
+    region: 'us-west-1',
+  }
+});
