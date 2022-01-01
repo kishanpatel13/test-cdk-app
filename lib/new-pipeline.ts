@@ -13,7 +13,7 @@ export class NewPipelineStack extends Stack {
                 input: CodePipelineSource.gitHub('kishanpatel13/test-cdk-app', 'main', {
                     authentication: new SecretValue("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"),
                 }),
-                commands: ['npm ci', 'npm run build', 'npx cdk bootstrap', 'npx cdk synth']
+                commands: ['npm ci', 'npm run build', 'npx cdk synth']
             })
         });
 
