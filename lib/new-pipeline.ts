@@ -1,7 +1,6 @@
 import { SecretValue, Stack, StackProps, } from "aws-cdk-lib";
 import { CodePipeline, CodePipelineSource, ShellStep } from "aws-cdk-lib/pipelines";
 import { Construct } from "constructs";
-import { MyPipelineAppStage } from './new-pipeline-app-stage';
 
 export class NewPipelineStack extends Stack {
     constructor(scope: Construct, id: string, props?: StackProps) {
