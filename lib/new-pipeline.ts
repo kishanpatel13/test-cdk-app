@@ -17,6 +17,6 @@ export class NewPipelineStack extends Stack {
             })
         });
 
-        pipeline.addStage(new MyPipelineAppStage(this, "testAppStage"))
+        pipeline.addStage(new MyPipelineAppStage(this, "TestLambdaDev"))
     }
 }
