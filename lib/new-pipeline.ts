@@ -11,7 +11,7 @@ export class NewPipelineStack extends Stack {
             selfMutation: false,
             synth: new ShellStep('Synth', {
                 input: CodePipelineSource.gitHub('kishanpatel13/test-cdk-app', 'main', {
-                    authentication: new SecretValue("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"),
+                    authentication: new SecretValue("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"),
                 }),
                 commands: ['npm ci', 'npm run build', 'npx cdk synth']
             })
